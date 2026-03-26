@@ -1,9 +1,12 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { fetchInvoices } from "@/app/lib/data";
 import CardsWrapper from "@/app/ui/dashboard/cards-wrapper";
 import { CardsSkeleton } from "@/app/ui/dashboard/skeletons";
+import CreateInvoiceForm from "../ui/dashboard/create-form";
+import DeleteButton from "../ui/dashboard/delete-button";
 
-export default async function Page() {
+export default async function DashboardPage() {
   const invoices = await fetchInvoices();
 
   return (
@@ -15,6 +18,11 @@ export default async function Page() {
       </Suspense>
 
       <div>
+        <h2 className="text-xl font-semibold mb-2">Create Invoice</h2>
+        <CreateInvoiceForm />
+      </div>
+
+      <div>
         <h2 className="text-xl font-semibold mb-2">Recent Invoices</h2>
 
         <ul className="space-y-2">
@@ -23,7 +31,9 @@ export default async function Page() {
               <p>
                 <strong>{invoice.customer}</strong>
               </p>
+
               <p>₹{invoice.amount}</p>
+
               <p
                 className={
                   invoice.status === "paid"
@@ -33,6 +43,15 @@ export default async function Page() {
               >
                 {invoice.status}
               </p>
+
+              <DeleteButton id={invoice.id} />
+
+              <Link
+                href={`/dashboard/invoices/${invoice.id}/edit`}
+                className="inline-block mt-2 mr-2 text-blue-600"
+              >
+                Edit
+              </Link>
             </li>
           ))}
         </ul>

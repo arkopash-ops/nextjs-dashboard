@@ -59,3 +59,19 @@ export async function fetchInvoices(): Promise<InvoiceDTO[]> {
         status: item.status,
     }));
 }
+
+
+export async function fetchInvoiceById(id: string) {
+    await connectToDB();
+
+    const invoice = await Invoice.findById(id).lean<InvoiceDocument>();
+
+    if (!invoice) return null;
+
+    return {
+        id: invoice._id.toString(),
+        customer: invoice.customer,
+        amount: invoice.amount,
+        status: invoice.status,
+    };
+}
